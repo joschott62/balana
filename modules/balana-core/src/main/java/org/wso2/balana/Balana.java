@@ -106,17 +106,28 @@ public class Balana {
     private Balana(String pdpConfigName, String attributeFactoryName, String functionFactoryName,
                                                                 String combiningAlgFactoryName) {
         ConfigurationStore  store = null;
+        String configFile;
+        File file;
 
         try {
             if(System.getProperty(ConfigurationStore.PDP_CONFIG_PROPERTY) != null){
                 store = new ConfigurationStore();
             } else {
-                String configFile = (new File(".")).getCanonicalPath() + File.separator + "src" +
-                File.separator + "main" + File.separator +  "resources" + File.separator + "config.xml";
-                File file = new File(configFile);
+            	configFile = (new File(".")).getCanonicalPath() + File.separator + "src" +
+                        File.separator + "main" + File.separator +  "resources" + File.separator + "config.xml";                
+ 
+                file = new File(configFile);
                 if(file.exists()) {
-                    store = new ConfigurationStore(new File(configFile));
+                    store = new ConfigurationStore(file);
+                } else {
+                	// Build the path to the location specified by the documentation
+                	configFile = (new File(".")).getCanonicalPath() + File.separator + "repository" + File.separator + "components" + 
+                			File.separator +  "lib" + File.separator + "balana-config.xml";      
+                    file = new File(configFile);
+                    if(file.exists()) 
+                    store = new ConfigurationStore(file);              	
                 }
+                	
             }
 
             if(store != null){
